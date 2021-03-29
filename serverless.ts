@@ -21,6 +21,7 @@ const serverlessConfiguration: Serverless = {
         },
         environment: {
             AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+            NODE_ENV: '${env:NODE_ENV}',
         },
         // Grant Access to DynamoDB
         iamRoleStatements: [
@@ -37,10 +38,26 @@ const serverlessConfiguration: Serverless = {
                     "dynamodb:DeleteItem"
                 ],
                 Resource: [
-                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/VenueProfile',
-                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/Products',
-                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/Orders',
-                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/Discounts',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_Discounts',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_Discounts/index/*',
+                ],
+            },
+            {
+                Effect: 'Allow',
+                Action: [
+                    "dynamodb:BatchGetItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                ],
+                Resource: [
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_Orders',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_Orders/index/*',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_Products',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_Products/index/*',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_UserProfile',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_VenueProfile',
+                    'arn:aws:dynamodb:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:table/${env:NODE_ENV}_VenueProfile/index/*',
                 ],
             }
         ],
@@ -53,7 +70,11 @@ const serverlessConfiguration: Serverless = {
                     http: {
                         method: 'ANY',
                         path: '/',
-                        cors: true,
+                        cors: {
+                            origins: '*',
+                            headers: '*',
+                            allowCredentials: true
+                        },
                         authorizer: {
                             type: 'COGNITO_USER_POOLS',
                             name: 'Cognito-1',
@@ -66,7 +87,11 @@ const serverlessConfiguration: Serverless = {
                     http: {
                         method: 'ANY',
                         path: '/{proxy+}',
-                        cors: true,
+                        cors: {
+                            origins: '*',
+                            headers: '*',
+                            allowCredentials: true
+                        },
                         authorizer: {
                             type: 'COGNITO_USER_POOLS',
                             name: 'Cognito-2',
@@ -88,7 +113,7 @@ const serverlessConfiguration: Serverless = {
             },
         },
         project: {
-            cognito: '${env:COGNITO_POOL_ID}',
+            cognito: 'arn:aws:cognito-idp:${opt:region, "ap-southeast-2"}:${env:AWS_ACCOUNT_ID}:userpool/${env:COGNITO_POOL_ID}',
             dev: 'api.dev.appetizr.co',
             prod: 'api.appetizr.co',
         },

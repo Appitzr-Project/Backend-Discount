@@ -1,12 +1,15 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { profileIndex } from '../controller/profileController';
+import { discountsIndex, discountStore, discountStoreValidation, discountUpdate, discountUpdateValidation, discountDelete } from '../controller/discountController';
 
 // Route Declare
 const route = express.Router();
 
 // Route List
-route.get('/', profileIndex);
+route.get('/', discountsIndex);
+route.post('/', discountStoreValidation, discountStore);
+route.put('/:id', discountUpdateValidation, discountUpdate);
+route.delete("/:id", discountDelete);
 
 // health check api
 route.get('/health-check', (req: Request, res: Response) => {

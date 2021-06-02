@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Appitzr-Project/Backend-Discount#readme",
   "dependencies": {
-    "@appitzr-project/db-model": "^1.0.25",
+    "@appitzr-project/db-model": "^1.0.35",
     "@base-pojokan/auth-aws-cognito": "^1.0.11",
     "@base-pojokan/express-validate-message": "^0.4.0",
     "aws-sdk": "^2.848.0",

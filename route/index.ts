@@ -1,11 +1,15 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import { venueDiscountGet } from '../controller/discountController';
+import { discountsIndex, discountStore, discountStoreValidation, discountUpdate, discountUpdateValidation, discountDelete, venueDiscountGet } from '../controller/discountController';
 
 // Route Declare
 const route = express.Router();
 
-// Route Discount List Venue
+// Route List
+route.get('/', discountsIndex);
+route.post('/', discountStoreValidation, discountStore);
+route.put('/:id', discountUpdateValidation, discountUpdate);
+route.delete("/:id", discountDelete);
 route.get('/venue/:venueId', venueDiscountGet);
 
 // health check api

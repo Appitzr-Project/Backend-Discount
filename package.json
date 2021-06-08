@@ -24,6 +24,7 @@
   "dependencies": {
     "@appitzr-project/db-model": "^1.0.37",
     "@base-pojokan/auth-aws-cognito": "^1.0.12",
+    "@base-pojokan/express-validate-message": "^0.4.0",
     "aws-sdk": "^2.918.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
